@@ -9,10 +9,11 @@ import org.springframework.ui.ExtendedModelMap
 class HelloControllerUnitTests {
     private lateinit var controller: HelloController
     private lateinit var model: Model
-    
+    private lateinit var greetingController: GreetingController
+
     @BeforeEach
     fun setup() {
-        controller = HelloController("Test Message")
+        controller = HelloController(greetingController)
         model = ExtendedModelMap()
     }
     
@@ -36,7 +37,7 @@ class HelloControllerUnitTests {
     
     @Test
     fun `should return API response with timestamp`() {
-        val apiController = HelloApiController()
+        val apiController = HelloApiController(greetingController)
         val response = apiController.helloApi("Test")
         
         assertThat(response).containsKey("message")
