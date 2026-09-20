@@ -22,3 +22,6 @@ jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 bootstrap = { module = "org.webjars:bootstrap", version.ref = "bootstrap" }
 webjars-locator-lite = { module = "org.webjars:webjars-locator-lite" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-data-rest = { module = "org.springframework.boot:spring-boot-starter-data-rest" }
+h2 = { module = "com.h2database:h2" }

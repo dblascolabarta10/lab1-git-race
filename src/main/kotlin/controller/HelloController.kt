@@ -1,5 +1,7 @@
 package es.unizar.webeng.hello.controller
 
+import es.unizar.webeng.hello.domain.GreetingLog
+import es.unizar.webeng.hello.domain.GreetingLogRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
@@ -49,10 +51,10 @@ class HelloController(
  * @author Daniel Blasco Labarta
  */
 @RestController
-class HelloApiController (private val greetingController: GreetingController){
+class HelloApiController (private val greetingController: GreetingController,private val greetingLogRepository: GreetingLogRepository){
     /**
      * Responde a peticiones GET en la ruta `/api/hello`.
-     *
+     * Además, persiste un registro del saludo en la base de datos relacional.
      * @param name Nombre a incluir en el saludo (por defecto "World").
      * @param language Idioma del saludo (por defecto "en").
      * @param timezone Huso horario para calcular el momento del día (por defecto "Europe/Madrid").
@@ -65,9 +67,26 @@ class HelloApiController (private val greetingController: GreetingController){
                 @RequestParam(defaultValue = "en") language: String,
                 @RequestParam(defaultValue = "Europe/Madrid") timezone: String): Map<String, String> {
         val greeting = greetingController.getGreeting(name, language,timezone)
+
+        val log = GreetingLog(name = name, language = language, timezone = timezone)
+        greetingLogRepository.save(log)
         return mapOf(
             "message" to greeting,
             "timestamp" to java.time.Instant.now().toString()
         )
+    }
+    /**
+     * Endpoint. Devuelve el número total de saludos agrupados por idioma.
+     */
+    @GetMapping("/api/stats/language", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getLanguageStats(): List<es.unizar.webeng.hello.domain.LanguageStats> {
+        return greetingLogRepository.countGreetingsByLanguage()
+    }
+    /**
+     * Endpoint. Devuelve el número total de saludos agrupados por zona horaria.
+     */
+    @GetMapping("/api/stats/timezone", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getTimezoneStats(): List<es.unizar.webeng.hello.domain.TimezoneStats> {
+        return greetingLogRepository.countGreetingsByTimezone()
     }
 }

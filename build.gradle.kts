@@ -46,6 +46,10 @@ dependencies {
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testImplementation(libs.spring.boot.restclient)
     testImplementation(libs.spring.boot.resttestclient)
+
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.data.rest)
+    runtimeOnly(libs.h2)
 }
 
 tasks.withType<Test> {

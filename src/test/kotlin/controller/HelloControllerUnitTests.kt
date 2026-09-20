@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test
 import org.springframework.ui.Model
 import org.springframework.ui.ExtendedModelMap
 
+import es.unizar.webeng.hello.domain.GreetingLogRepository
+import org.mockito.Mockito.mock
+
 class HelloControllerUnitTests {
     private lateinit var controller: HelloController
     private lateinit var model: Model
     private val greetingController = GreetingController()
+    private val greetingLogRepository = mock(GreetingLogRepository::class.java)
     @BeforeEach
     fun setup() {
         controller = HelloController(greetingController)
@@ -34,7 +38,7 @@ class HelloControllerUnitTests {
     
     @Test
     fun `should return API response with timestamp`() {
-        val apiController = HelloApiController(greetingController)
+        val apiController = HelloApiController(greetingController, greetingLogRepository)        
         val response = apiController.helloApi("Test", "en", "Europe/Madrid")        
         assertThat(response).containsKey("message")
         assertThat(response).containsKey("timestamp")
@@ -45,7 +49,7 @@ class HelloControllerUnitTests {
     @Test
     fun `should return controlled error message for invalid timezone`() {
         // Prueba: Comprobamos que el try-catch de nuestro GreetingController funciona
-        val apiController = HelloApiController(greetingController)
+        val apiController = HelloApiController(greetingController, greetingLogRepository)        
         val response = apiController.helloApi("Student", "es", "Mordor/Mount_Doom")
         
         assertThat(response["message"]).contains("Error: The timezone")
@@ -55,7 +59,7 @@ class HelloControllerUnitTests {
     @Test
     fun `should fallback to english if language is unknown`() {
         // Prueba: Si mandamos un idioma raro (ru = Ruso), debe usar el diccionario en inglés
-        val apiController = HelloApiController(greetingController)
+        val apiController = HelloApiController(greetingController, greetingLogRepository)        
         val response = apiController.helloApi("Dani", "ru", "Europe/Madrid")
         
         // No sabemos si será morning, afternoon o night, pero sabemos que terminará con el nombre
