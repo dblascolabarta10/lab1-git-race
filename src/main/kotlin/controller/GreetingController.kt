@@ -5,8 +5,9 @@ import java.time.LocalTime
 import java.time.ZoneId
 
 /**
- * Indica a Spring que esta clase contiene la lógica de negocio principal. 
- */
+ * Servicio para la lógica de generación de saludos.
+ *
+ * @author Daniel Blasco Labarta */
 @Service
 class GreetingController {
 
@@ -24,8 +25,13 @@ class GreetingController {
 
     /**
      * Calcula el saludo cruzando el nombre, el idioma y la hora local obtenida a partir 
-     * del huso horario. Define valores por defecto para que la aplicación no falle si 
-     * el cliente omite algún parámetro en la petición.
+     * del huso horario. Define valores por defecto para evitar fallos.
+     *
+     * @param name Nombre del usuario. Si está en blanco, se asume "Student".
+     * @param language Código de idioma de dos letras (ej: "es", "en", "fr"). Por defecto "en".
+     * @param timezone Huso horario válido de la IANA (ej: "Europe/Madrid", "Asia/Tokyo").
+     * @return El saludo formateado y traducido, o un mensaje de error si el TimeZone es inválido.
+     * @since 1.0
      */
     fun getGreeting(name: String, language: String = "en", timezone: String = "Europe/Madrid"): String {
         
